@@ -10,12 +10,14 @@ Files included:
 ## To run block-stacking.py:
 ```python block-stacking.py input.txt output.txt```
 
-## Block stacking algorithm
+## Block stacking algorithm and implementation
 My block stacking algorithm follow these steps:
 1. For each of the inputted dimensions, it generates the 3 different base size possibilities and adds them to a list. Because we later have to compare the depths and widths of the different dimension options, we must make sure they are ordered in a consistent way. In my blockOrientations() function, I ensure that for any appended base size, the depth (first tuple value) will always be less than or equal to the width (second tuple value).
 2. I sort the list of dimensions in order of decreasing base area. I do this by calculating each of their base size, zipping the two lists, sorting by the base size value of the tuple and then removing the base size component.
 3. In order to generate the dynamic programming table, I first initialize three arrays to track the three pieces of info that I care about for all dimensions: the height of the max stack that includes that dimension, the number of blocks used to achieve that height, and the list of blocks in the stack. These are all initialized as if the answer for each dimension was just a stack of itself. Next, we generate two for loops. For each block, we look at all blocks with larger area and determine whether or not we can stack the current block on top of it. If we can, then we know that we can increase the stack of the previous blocks optimal solution by the height of the current block. Thus, as we iterate through the outer for loop, we progressively generate the optimal solution for each block dimension.
 4. Finally, we search through the dynamic programming table for the maximum possible stack height.
+
+Runtime: This algorithm will have time complexity O(n^2) (where n is the length of the inputted dimension list) because of the 2 nested for loops used to generate the dynamic programming table. We visit each element, on average, n/2 times, because for each element i, we look at the table values of element 0 through i. It will have space complexity O(n) because the dynamic programming table only has one parameter, and is a 1D array.
 
 ## Design decision
 I chose to track the relevant information (max stack height, number of blocks in the max stack and the list of blocks in the max stack) in three separate lists that would all be updated as the solution was generated. I knew that the max_index for one was guaranteed to also the max_index for the others. This is sort of like generating 3 separate dynamic programming tables for the different solutions, which arguably takes up more space than is strictly necessary. Another option might have been to construct a single list of lists that each had three entries with the three relevant pieces of information. However, I personally found updating the three lists to be more readable and straightforward, and seeing as a solution with space usage 3N isn't asymptotically worse than space N, I figured it was an acceptable tradeoff.
